@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Appointment</title>
+    </head>
+    <body>
+        <h3>Welcome {{request.session.name}}</h3>
+        <a href="{% url 'login:logout' %}" name="logout">Logout</a></br>
+        <h3>Here are appointments {{current_date|date:"F d, Y"}}</h3>
+        <table>
+            <tr>
+                <th>Tasks</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            {% for results in appointments %}
+            <tr>
+                <td>{{ results.task }}</td>
+                <td>{{ results.time }}</td>
+                <td>{{ results.status}}</td>
+                <td><a href="{% url 'appointments:edit' id=results.id %}">Edit</a> <a href="{% url 'appointments:destroy' id=results.id %}">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <h3>Your other appointments</h3>
+        <table>
+            <tr>
+                <th>Tasks</th>
+                <th>Date</th>
+                <th>Time</th>
+            </tr>
+            {% for results in appointments_future %}
+            <tr>
+                <td>{{ results.task }}</td>
+                <td>{{ results.date }}</td>
+                <td>{{ results.time}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+            {% for message in messages %}
+            <h3>{{message}}</h3>
+            {% endfor %}
+            <form action="{% url 'appointments:add_task' %}" method='post'>
+                {% csrf_token %}
+                <p>Add Appointment</p>
+                <label>Date</label>
+                <input type="date" name="date">
+                <label>Time</label>
+                <input type="time" name="time">
+                <label>Tasks</label>
+                <input type="text" name="task">
+                <input id="press" type='submit' value='Add'>
+            </form>
+    </body>
+</html>
